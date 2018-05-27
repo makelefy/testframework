@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Projects from './views/Projects'
 import Home from './views/Home'
-import TheSidebar from './components/TheSidebar'
+//  import TheSidebar from './components/TheSidebar'
 import store from './store/store'
 // import Runs from './views/Runs'
 
@@ -20,7 +20,15 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home,
-      redirect: {name: 'project', params: {title: store.state.projects[0].name, item: store.state.projects[0], items: store.state.projects, labels: ['Projects', '+']}}
+      redirect: {
+        name: 'project',
+        params: {
+          title: store.state.projects[0].name,
+          item: store.state.projects[0],
+          items: store.state.projects,
+          labels: ['Projects', '+'],
+        },
+      },
     },
     {
       path: '/:title',
@@ -32,20 +40,20 @@ export default new Router({
           path: ':table',
           name: 'table',
           component: Home,
-          props: true
+          props: true,
         },
         {
           path: ':run',
           name: 'run',
           component: Home,
-          props: true
-        }
-      ]
+          props: true,
+        },
+      ],
     },
     {
       path: 'test',
       name: 'test',
-      component: Projects
-    }
-  ]
+      component: Projects,
+    },
+  ],
 })

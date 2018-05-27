@@ -31,8 +31,13 @@ export default {
       required: false
     }
   },
+  computed: {
+    runs(){
+      return this.$store.getters['runs/runs']
+    }
+  },  
   mounted(){
-    //this.$router.replace({name: 'project', item: this.item})
+    this.$router.replace({name: 'project', item: this.item})
   }
 }
 </script>

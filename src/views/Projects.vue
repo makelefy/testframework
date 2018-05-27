@@ -34,10 +34,10 @@ export default {
   },
   computed: {
     projects(){
-      return this.$store.state.projects
+      return this.$store.state.runs
     },
     tables(){
-      
+            return this.$store.state.projects
     }
   },
   mounted () {

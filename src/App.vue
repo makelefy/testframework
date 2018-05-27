@@ -10,7 +10,11 @@ import TheHeader from '@/components/header/TheHeader'
 export default {
   components: {
     TheHeader
+  },
+  created(){
+    //this.$store.dispatch('runs/FETCH_RUNS')
   }
+
 }
 </script>
 
