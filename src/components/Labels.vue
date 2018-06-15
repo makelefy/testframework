@@ -1,12 +1,6 @@
 <template>
   <li class="labels">
-    <span
-      class="label"
-      v-for="label in labels"
-      :key="label.index"
-      >
-      {{label}}
-    </span>
+    <span class="label" v-for="label in labels" :key="label.index">{{label}}</span>
   </li>
 </template>
 
@@ -16,7 +10,7 @@ export default {
   props: {
     labels: {
       type: Array,
-      required: true
+      required: false
     }
   }
 }
@@ -29,14 +23,26 @@ export default {
   .labels
     display: flex
     justify-content: space-between
-    margin-bottom: .5rem
-    padding-left: 1.4rem
+    margin-bottom: .25rem
     padding-right: 1rem
+
+  .sidebar .labels
+    padding-left: 1.4rem
+
+  .run-list .labels
+    padding-left: 1.25rem
 
   .label
     font-size: .8rem
-    font-weight: 300
     color: $grey
+
+  .label::first-letter
     text-transform: capitalize
+
+  .run-list .labels .label:nth-child(1)
+    flex-basis: 80%
+
+  .run-list .labels .label:nth-child(2)
+    flex-basis: 20%
 
 </style>

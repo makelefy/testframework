@@ -1,17 +1,31 @@
 <template>
-  <li 
-    class="list-item"> 
-    <!-- Data sets -->
-      <router-link
-        class="item-title"
-        :to="{ name: name, params: {item: item, labels: [name + 's', '+']} }"
-        >
-          {{item.name}}
-        </router-link>
-    <div class="dataset" v-for="(value, key) in item.data" :key="key">
-      <span class="data-title" v-if="sidebar">{{key}}</span>
-      <span>{{value}}</span>
+  <li class="list-item"
+      :class="{
+        active: item.title === $route.params.id || item.title === $route.params.runId,
+        success: item.status === 'OK',
+        error: item.status === 'FAILED',
+        current: item.status === 'current',
+        sidebar: type === 'sidebar',
+        table: type === 'table',
+        run: type === 'run',
+        testcase: type === 'testcase',
+        step: type === 'step'
+    }">
+
+    <slot name="routerlink"></slot>
+    <span class="data-item" v-if="type === 'testcase'">
+    {{new Date(item.time).toLocaleDateString('de-DE')}} {{new Date(item.time).toLocaleTimeString('de-DE')}}
+      </span>
+    
+    <span class="data-item" v-if="type === 'step'">
+    {{new Date(item.time).toLocaleDateString('de-DE')}} {{new Date(item.time).toLocaleTimeString('de-DE')}}
+      </span>
+
+    <div class="sidebar-dataset" v-for="(value, key) in item.data" :key="key" v-if="type === 'sidebar'">
+      <span class="data-title">{{key}}</span>
+      <span class="data-item">{{value}}</span>
     </div>
+
   </li>
 </template>
 
@@ -20,19 +34,12 @@ export default {
   props: {
     item: {
       type: Object,
-      required: true
+      required: false
     },
-    name: {
+    type: {
       type: String,
-      required: true
-    },
-    sidebar: {
-      type: Boolean,
       required: false
     }
-  },
-  mounted(){
-    
   }
 }
 </script>
@@ -44,15 +51,22 @@ export default {
 
   @import 'src/assets/styles/style-variables.sass'
 
+  /* GENERAL STYLING OF LIST ITEM */
+
   .list-item
+    display: flex
     background: $white
     border-radius: 3px
     margin-bottom: .5rem
     box-sizing: border-box
     transition: transform .3s ease-in-out
     box-shadow: 0 .1rem .4rem $bg-darker
+    justify-content: space-between
+    flex-wrap: no-wrap
+
     *
       margin: .1rem 0
+
     &:hover
       transform: translateX(-.5rem)
 
@@ -61,14 +75,18 @@ export default {
     font-weight: normal
     cursor: pointer
 
-  .dataset
-    display: flex
-    justify-content: space-between
-  
   .data-title::first-letter
     text-transform: capitalize
 
-  .project
+  /* STYLING OF LIST ITEMS IN SIDEBAR */
+
+  .sidebar-dataset
+    display: contents
+    display: flex
+    justify-content: space-between
+
+  .sidebar
+    flex-direction: column
     padding: .5rem 1rem
     &.success
       +border(.4rem, $green)
@@ -77,14 +95,19 @@ export default {
 
     .item-title
       font-weight: bold
+      flex-basis: 100%
 
-  .table, .run
+  /* STYLING OF LIST ITEMS WHEN A TABLE, RUN OR TESTCASE */
+
+  .table, .run, .testcase, .step
     display: flex
     flex-direction: row
     justify-content: space-between
+    align-content: center
     align-items: baseline
     min-height: 35px
     padding: .2rem 1rem
+    align-items: center
     &.success
       +border(.25rem, $green)
     &.error
@@ -92,16 +115,20 @@ export default {
     &.current
       +border(.25rem, $blue)
 
-  h3
-    font-weight: normal
-    font-size: 1rem
-  
+    .item-title
+      flex-basis: 80%
+      padding-right: 1rem
+
+    .data-item
+      flex-basis: 20%
+
+  /* ROUTER LINK STYLING */
+
   .router-link-exact-active
-    color: $blue
-  
+    font-weight: bold
+
   .active
     transform: translateX(-.5rem)
     box-shadow: 0 .5rem 1rem $bg-darker
-
 
 </style>

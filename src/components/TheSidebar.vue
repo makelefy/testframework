@@ -1,25 +1,39 @@
 <template>
   <aside class="sidebar">
     <searchbar :placeholder="placeholder" v-model="value"/>
-    <item-list :items="items" :labels="labels">
-        <!-- Loop to render list-items -->
-        <list-item
-          slot="list-item"
-          v-for="item in filteredItems"
-          :key="item.name"
-          :item="item"
-          :sidebar="true"
-          :name="'project'"
-          :class="{
-            success: item.status === 'success',
-            error: item.status === 'error',
-            current: item.status === 'current',
-            project: item.type === 'project',
-            table: item.type === 'table',
-            run: item.type === 'run'
-          }"/>
-        </item-list>
-  </aside>
+    <!-- BACK button -->
+    <slot name="back"></slot>
+    <!-- ITEMLIST in sidebar -->
+    <item-list :labels="labels" class="sidebar">
+      <!-- Loop to render LISTITEMS in sidebar -->
+        <list-item slot="list-item"
+                   v-for="item in filteredItems"
+                   :key="item.title" :item="item"
+                   :type="'sidebar'">
+          <!-- ROUTERLINK if LISTITEM === RUN -->
+          <router-link slot="routerlink"
+                       v-if="routename === 'run'"
+                       class="item-title"
+                       :to="{name: routename, params: {runId: item.title}}">
+              {{item.title}}
+            </router-link>
+          <!-- ROUTERLINK if LISTITEM === PROJECT -->
+          <router-link slot="routerlink"
+                       v-if="routename === 'project'"
+                       class="item-title"
+                       :to="{name: routename, params: {projecttitle: item.title}}">
+              {{item.title}}
+            </router-link>
+          <!-- ROUTERLINK if LISTITEM === TESTCASE -->
+          <router-link slot="routerlink"
+                       v-if="routename === 'testcase'"
+                       class="item-title"
+                       :to="{name: routename, params: {tctitle: item.title}}">
+              {{item.title}}
+            </router-link>
+        </list-item>
+      </item-list>
+    </aside>
 </template>
 
 <script>
@@ -36,29 +50,38 @@ export default {
     Labels,
     ListItem
   },
-  props: {
-    items: {
-      type: Array,
-      required: false,
-    },
-    placeholder: {
-      type: String,
-      required: true
-    },
-    labels: {
-      type: Array,
-      required: true
-    }
-  },
   data: () => ({
     value: ''
   }),
+  props: {
+    items: {
+      type: Array,
+      required: false
+    },
+    placeholder: {
+      type: String,
+      required: false
+    },
+    type: {
+      type: String,
+      required: false
+    },
+    labels: {
+      type: Array,
+      required: false
+    },
+    routename: {
+      type: String,
+      required: true
+    }
+  },
   computed: {
     filteredItems () {
-      if(this.items){
+      // Filters item in sidebar according to searcbar input
+      if (this.items) {
         return this.items.filter(item => {
-        return item.name.toLowerCase().indexOf(this.value.toLowerCase()) >= 0
-      })
+          return item.title.toLowerCase().indexOf(this.value.toLowerCase()) >= 0
+        })
       } else {
         return false
       }

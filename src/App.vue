@@ -1,20 +1,27 @@
 <template>
   <div id="app">
     <the-header/>
-    <router-view/>
+    <router-view>
+      <router-view></router-view>
+    </router-view>
   </div>
 </template>
 
 <script>
 import TheHeader from '@/components/header/TheHeader'
+import {mapActions} from 'vuex'
 export default {
   components: {
     TheHeader
   },
-  created(){
-    //this.$store.dispatch('runs/FETCH_RUNS')
+  methods: {
+    ...mapActions({
+      fetchRuns: 'runs/FETCH_DATA' // maps 'this.fetchData()' to 'this.$store.dispatch['api/FETCH_DATA'
+    })
+  },
+  created () {
+    this.fetchRuns(this.$route)
   }
-
 }
 </script>
 
@@ -57,6 +64,9 @@ h1
   flex-wrap: wrap
   margin: auto
 
+.wrapper
+  display: contents
+
 header.header
   flex-basis: 100%
   background: $white
@@ -75,9 +85,6 @@ main.content
   border-radius: .2rem
   padding: 1rem
 
-.wrapper
-  display: contents
-
 @supports (display: grid)
   #app
     display: grid
@@ -85,6 +92,10 @@ main.content
     grid-template-rows: 55px auto auto
     grid-template-areas: "hd hd hd hd hd hd hd hd hd hd hd hd " ". sb sb mn mn mn mn mn mn mn mn ." ". sb sb mn mn mn mn mn mn mn mn ."
     grid-gap: 1rem
+    @include tablet
+      padding: 0 1rem
+      grid-template-columns: repeat(8, 1fr)
+      grid-template-areas: "hd hd hd hd hd hd hd hd " "sb sb mn mn mn mn mn mn" "sb sb mn mn mn mn mn mn"
 
   header.header
     grid-area: hd

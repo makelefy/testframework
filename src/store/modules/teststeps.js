@@ -2,12 +2,12 @@
 import axios from 'axios'
 
 const state = {
-  runs: []
+  teststeps: []
 }
 
 const getters = {
-  runs () {
-    return state.runs
+  teststeps () {
+    return state.teststeps
   }
 }
 
@@ -15,10 +15,10 @@ const actions = {
   // Async call to API
   async FETCH_DATA ({commit}, params) {
     try {
-      console.log('runs: ' + JSON.stringify(params.params))
+      console.log('teststeps: ' + JSON.stringify(params.params))
 
       const response = await axios.get(
-        'http://localhost:3000/runs/'
+        'http://localhost:3000/teststeps/' + params.params.testcaseId
       )
       // Send data to mutations to write/give(mutate) data to state
       commit('RECEIVE_DATA', {data: response.data})
@@ -31,24 +31,19 @@ const actions = {
 const mutations = {
   RECEIVE_DATA (state, {data}) {
     // Loop through objects in response data
-    for (let run of data) {
+    for (let teststeps of data) {
       // Push objects with custom keys to state
-      console.log(JSON.stringify(run))
+      console.log('teststeps: ' + JSON.stringify(teststeps.meta))
 
-      let runObject = {
-        time: run.run.meta.time,
-        title: run.runId,
-        runId: run.run.runId,
-        id: run.run.data.message,
-        status: _getStatusForLoglevel(run.run.meta.logLevel), 
+      state.teststeps.push({
+        time: teststeps.meta.time,
+        title: teststeps.meta.step.name,
+        id: teststeps.meta.step.id,
+        status: _getStatusForLoglevel(teststeps.logLevel), 
         data: {
-          stepCount: run.run.data.stepCount,
-          testCaseCount: run.run.data.stepCount
+          teststeps
         }
-      }
-
-      state.runs.push(runObject)
-      // console.log(runObject)
+      })
     }
   }
 }
@@ -70,5 +65,6 @@ function _getStatusForLoglevel (logeLevel) {
   } else if (logeLevel === 'fatal') {
     return 'FAILED'
   }
+
   return 'OK'
 }
